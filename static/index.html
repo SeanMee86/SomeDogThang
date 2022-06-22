@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <input type="number">
+    <button>Get Dog</button>
+</body>
+<script>
+    const btn = document.querySelector('button')
+    const input = document.querySelector('input')
+    let dogImg
+    btn.addEventListener("click", () => {
+        if(!dogImg) {
+            const imgNode = document.createElement("IMG")
+            document.body.appendChild(imgNode)
+            imgNode.classList.add("dog-image")
+        }
+        dogImg = document.querySelector('.dog-image')
+        fetch(`http://localhost:8080/api/dogs/${input.value}`)
+        .then(resp => resp.json())
+        .then(data => {
+            data.forEach(dog => {
+                console.log(JSON.parse(dog))
+            })
+        })
+
+    })
+</script>
+</html>
