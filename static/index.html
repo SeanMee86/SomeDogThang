@@ -12,6 +12,11 @@
             justify-content: center;
             align-items: center;
         }
+        #dogImages {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+        }
         button {
             margin-bottom: 20px;
         }
@@ -23,25 +28,23 @@
 <body>
     <input type="number">
     <button>Get Dog</button>
+    <div id="dogImages"></div>
 </body>
 <script>
     const btn = document.querySelector('button')
     const input = document.querySelector('input')
-    let dogImg
     btn.addEventListener("click", () => {
-        if(!dogImg) {
-            const imgNode = document.createElement("IMG")
-            document.body.appendChild(imgNode)
-            imgNode.classList.add("dog-image")
-        }
-        dogImg = document.querySelector('.dog-image')
+        document.getElementById("dogImages").innerHTML = ""
         fetch(`http://localhost:8080/api/dogs/${input.value}`)
-        .then(resp => resp.json())
-        .then(data => {
-            data.forEach(dog => {
-                console.log(JSON.parse(dog))
+            .then(resp => resp.json())
+            .then(data => {
+                data.forEach(dog => {
+                    const imgUrl = JSON.parse(dog).message
+                    const imgNode = new Image()
+                    document.getElementById("dogImages").appendChild(imgNode)
+                    imgNode.src = imgUrl
+                })
             })
-        })
 
     })
 </script>
