@@ -10,15 +10,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func getDog(slc *[]string, channel chan string, wg *sync.WaitGroup) {
+func getDog(slc *[]string, wg *sync.WaitGroup) {
 	resp, err := http.Get("https://dog.ceo/api/breeds/image/random")
 	if err != nil {
 		log.Fatal("Errors: ", err)
 	}
 	json, _ := ioutil.ReadAll(resp.Body)
 	dog := string(json)
-	channel <- dog
-	*slc = append(*slc, <- channel)
+	*slc = append(*slc, dog)
 	wg.Done()
 }
 
@@ -42,9 +41,8 @@ func getDogsHandler(w http.ResponseWriter, r *http.Request) {
 
 	wg.Add(count)
 	var mySlice []string
-	c := make(chan string, count)
 	for i := 0; i < count; i++ {
-		go getDog(&mySlice, c, &wg)
+		go getDog(&mySlice, &wg)
 		// getDogNoWait(&mySlice)
 	}
 	wg.Wait()
